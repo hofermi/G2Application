@@ -1,4 +1,4 @@
-package de.helaba.jets.domain;
+package de.helaba.jets.g2.domain;
 
 public enum ServiceType {
     SDD_CORE,

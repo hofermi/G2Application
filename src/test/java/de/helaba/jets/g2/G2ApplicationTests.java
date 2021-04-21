@@ -1,4 +1,4 @@
-package de.helaba.jets.g2application;
+package de.helaba.jets.g2;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,4 +1,4 @@
-package de.helaba.jets.domain;
+package de.helaba.jets.g2.domain;
 
 import java.util.Date;
 import javax.persistence.Entity;

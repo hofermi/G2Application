@@ -1,6 +1,12 @@
 node_modules
 HELP.md
 target/
+/node/
+/node_modules/
+/webpack.config.js
+/webpack.generated.js
+/package-lock.json
+/package.json
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/

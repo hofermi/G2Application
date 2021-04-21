@@ -7,11 +7,11 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface Pacs008PaymentTransactionRepository extends CrudRepository<Pacs008PaymentTransaction, Long> {
 
-    Pacs008PaymentTransaction findById(long id);
+    Pacs008PaymentTransaction findByUid(long uid);
 
     List<Pacs008PaymentTransaction> findByInboundFile(InboundFile inboundFile);
 
-    List<Pacs008PaymentTransaction> findByInboundFileId(long id);
+    List<Pacs008PaymentTransaction> findByInboundFileUid(long uid);
 
 }
 

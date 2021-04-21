@@ -12,5 +12,6 @@ public interface Pacs008PaymentTransactionRepository extends CrudRepository<Pacs
     List<Pacs008PaymentTransaction> findByInboundFile(InboundFile inboundFile);
 
     List<Pacs008PaymentTransaction> findByInboundFileId(long id);
+
 }
 

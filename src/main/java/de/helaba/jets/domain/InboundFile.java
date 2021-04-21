@@ -31,11 +31,11 @@ public class InboundFile {
     @Size(min = 5, message = "Filename must be at least 5 characters long")
     private String remitter;
 
-
     private Date creationTimestamp;
 
     @PrePersist
     void createdAt() {
         creationTimestamp = new Date();
     }
+
 }

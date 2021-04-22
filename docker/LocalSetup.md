@@ -72,3 +72,15 @@ On first startup, topics must be created:
 | Topic name    | Partitions | Replication factor |
 | ------------- | ---------: | -----------------: |
 | g2-booking    | 4          | 2                  |
+
+## Stop Docker Containers
+1. Open a terminal
+
+
+2. Go to the project directory
+
+
+3.     % cd docker
+
+
+4.     % docker compose down -v  

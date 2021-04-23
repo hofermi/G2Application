@@ -1,0 +1,19 @@
+{
+    "type": "record",
+    "namespace": "de.helaba.jets.g2.kafka.avro.model",
+    "name": "G2BookingAvroRecord",
+    "fields": [
+        {
+            "name": "creditorIban",
+            "type": "string"
+        },
+        {
+            "name": "debtorIban",
+            "type": "string"
+        },
+        {
+            "name": "amount",
+            "type": "string"
+        }
+    ]
+}

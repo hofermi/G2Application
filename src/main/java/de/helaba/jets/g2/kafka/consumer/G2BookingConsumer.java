@@ -3,6 +3,7 @@ package de.helaba.jets.g2.kafka.consumer;
 import de.helaba.jets.g2.kafka.avro.model.G2BookingAvroRecord;
 import de.helaba.jets.g2.kafka.event.G2BookingPayload;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 
 @Component // mandatory for using @KafkaListener
@@ -14,11 +15,10 @@ public class G2BookingConsumer {
             clientIdPrefix = "myClientId",
             autoStartup = "true"
     )
-    public void listen(G2BookingAvroRecord data) { // , Acknowledgment ack
+    public void listen(G2BookingAvroRecord data, Acknowledgment ack) {
         G2BookingPayload g2BookingPayload = G2BookingPayload.fromAvroRecord(data);
-        System.out.println("!!! Received: " + g2BookingPayload);
-        //consumer.commitAsync();
-        //ack.acknowledge();
+        System.out.println("Received: " + g2BookingPayload);
+        ack.acknowledge(); // async commit
     }
 
 /*

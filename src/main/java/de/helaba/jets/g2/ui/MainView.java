@@ -21,7 +21,7 @@ public class MainView extends VerticalLayout {
     G2BookingProducer g2BookingProducer;
 
     public MainView() {
-        add(new Button("Click me", e -> Notification.show("Hello, this is a G2 prototype!")));
+        //add(new Button("Click me", e -> Notification.show("Hello, this is a G2 prototype!")));
         add(new Button("Send event to kafka topic", e -> sendRandomG2Booking()));
     }
 

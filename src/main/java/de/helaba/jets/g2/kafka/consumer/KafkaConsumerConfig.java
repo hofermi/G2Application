@@ -16,6 +16,7 @@ import org.springframework.kafka.config.KafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
+import org.springframework.kafka.listener.ContainerProperties;
 
 @EnableKafka
 @Configuration
@@ -50,10 +51,17 @@ public class KafkaConsumerConfig {
         ConcurrentKafkaListenerContainerFactory<String, G2BookingAvroRecord> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
-        factory.setConcurrency(1); // number of consumer in consumer group
+
+        // number of consumers in consumer group
+        factory.setConcurrency(1);
+
+        // wait a max. time of 3000 millis for records
+        // do not wait any longer, if (a batch of) records are received
         factory.getContainerProperties().setPollTimeout(3000);
-        //factory.getContainerProperties().setMessageListener(new G2BookingConsumer());
-        //factory.getContainerProperties().setAckMode(...);
+
+        // manual committing offsets
+        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL);
+
         return factory;
     }
 

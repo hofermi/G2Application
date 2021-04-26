@@ -9,6 +9,7 @@ services:
       - ~/docker/volumes/mariadb:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: "g2-prototype-pw"
+
   zookeeper:
     image: bitnami/zookeeper:3.7.0
     restart: always
@@ -18,6 +19,7 @@ services:
       - ~/docker/volumes/zookeeper:/bitnami/zookeeper
     environment:
       ALLOW_ANONYMOUS_LOGIN: "yes"
+
   kafka-0:
     image: bitnami/kafka:2.8.0
     restart: always
@@ -37,6 +39,7 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: "INTERNAL"
     depends_on:
       - zookeeper
+
   kafka-1:
     image: bitnami/kafka:2.8.0
     restart: always
@@ -56,6 +59,7 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: "INTERNAL"
     depends_on:
       - zookeeper
+
   kafka-2:
     image: bitnami/kafka:2.8.0
     restart: always
@@ -75,13 +79,27 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: "INTERNAL"
     depends_on:
       - zookeeper
-  kafdrop:
-    image: obsidiandynamics/kafdrop:3.28.0-SNAPSHOT
+
+#  kafdrop:
+#    image: obsidiandynamics/kafdrop:3.28.0-SNAPSHOT
+#    restart: always
+#    ports:
+#      - 9000:9000
+#    environment:
+#      KAFKA_BROKERCONNECT: >-
+#        kafka-0:29092,kafka-1:29092,kafka-2:29092
+#    depends_on:
+#      - kafka-0
+#      - kafka-1
+#      - kafka-2
+
+  kowl:
+    image: quay.io/cloudhut/kowl:v1.3.1
     restart: always
     ports:
-      - 9000:9000
+      - 9000:8080
     environment:
-      KAFKA_BROKERCONNECT: >-
+      KAFKA_BROKERS: >-
         kafka-0:29092,kafka-1:29092,kafka-2:29092
     depends_on:
       - kafka-0

@@ -18,9 +18,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
-//@Data
+@Data
 //@RequiredArgsConstructor
-//@NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
+@NoArgsConstructor(access = AccessLevel.PUBLIC, force = true)
 @Entity
 @Table(name = "PACS008_PAYMENT_TRANSACTION")
 public class Pacs008PaymentTransaction implements Serializable {

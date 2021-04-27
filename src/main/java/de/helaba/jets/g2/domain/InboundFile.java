@@ -17,9 +17,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
-//@Data
-//@RequiredArgsConstructor
-//@NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
+@Data
+// @RequiredArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PUBLIC, force = true)
 @Entity
 @Table(name = "INBOUND_FILE")
 public class InboundFile implements Serializable {

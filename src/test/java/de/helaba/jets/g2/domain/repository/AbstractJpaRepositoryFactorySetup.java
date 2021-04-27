@@ -13,7 +13,7 @@ public class AbstractJpaRepositoryFactorySetup {
     private EntityManager em;
 
 
-    protected EntityManager getEntiityManager() {
+    protected EntityManager getEntityManager() {
         if (em == null) {
             setUp();
         }

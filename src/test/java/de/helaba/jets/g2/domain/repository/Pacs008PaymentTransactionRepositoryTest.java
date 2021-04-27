@@ -30,7 +30,7 @@ public class Pacs008PaymentTransactionRepositoryTest extends AbstractJpaReposito
         inboundFile.setCreationTimestamp(new Date());
         inboundFile.setRemitter("TestRemitter");
 
-        getEntiityManager().getTransaction().begin();
+        getEntityManager().getTransaction().begin();
         Pacs008PaymentTransaction pacs008PaymentTransaction = new Pacs008PaymentTransaction();
         pacs008PaymentTransaction.setAmount(new BigDecimal("10.00"));
         pacs008PaymentTransaction.setRemittanceInformation("Remittance information");
@@ -40,7 +40,7 @@ public class Pacs008PaymentTransactionRepositoryTest extends AbstractJpaReposito
 
         repository.save(pacs008PaymentTransaction);
 
-        getEntiityManager().getTransaction().commit();
+        getEntityManager().getTransaction().commit();
         assertThat(repository.findById(pacs008PaymentTransaction.getUid())).hasValue(pacs008PaymentTransaction);
 
     }

@@ -8,7 +8,6 @@ import de.helaba.jets.g2.kafka.event.G2BookingPayload;
 import de.helaba.jets.g2.kafka.producer.G2BookingProducer;
 import org.apache.commons.lang3.RandomUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.annotation.KafkaListener;
 
 /**
  * access main view via:

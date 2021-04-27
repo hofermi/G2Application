@@ -84,3 +84,13 @@ On first startup, topics must be created:
 
 
 4.     % docker compose down -v  
+
+
+## Write schema to schema registry:
+
+Schema must be registered once, so that avro serialization/deserialization is possible
+
+1. Docker container for schema registry must be running
+
+
+2. Run SchemaRegistryUtil

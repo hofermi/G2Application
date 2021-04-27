@@ -1,11 +1,12 @@
 package de.helaba.jets.g2.kafka.consumer;
 
-import de.helaba.jets.g2.kafka.avro.AvroDeserializer;
 import de.helaba.jets.g2.kafka.avro.model.G2BookingAvroRecord;
+import io.confluent.kafka.serializers.KafkaAvroDeserializer;
+import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig;
+import io.confluent.kafka.serializers.KafkaAvroSerializerConfig;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -25,8 +26,11 @@ public class KafkaConsumerConfig {
     @Value(value = "${kafka.bootstrapAddress}") // configured in application.properties
     private String bootstrapAddress;
 
-    @Value(value = "${kafka.topic.g2Booking.consumer.groupId}")
+    @Value(value = "${kafka.topic.g2Booking.consumer.groupId}") // configured in application.properties
     private String groupId;
+
+    @Value(value = "${kafka.schemaRegistry.url}") // configured in application.properties
+    private String schemaRegistryUrl;
 
     @Bean
     public ConsumerFactory<String, G2BookingAvroRecord> consumerFactory() {
@@ -34,7 +38,11 @@ public class KafkaConsumerConfig {
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, AvroDeserializer.class);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
+        props.put(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl);
+
+        // use Specific Record, otherwise you get Avro GenericRecord.
+        props.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, "true");
 
         // read all existing records from the topic
         // use "latest" to do not read any prior records
@@ -43,7 +51,7 @@ public class KafkaConsumerConfig {
         // instead use consumer.commitAsync() to commit offsets
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
 
-        return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), new AvroDeserializer<G2BookingAvroRecord>(G2BookingAvroRecord.class));
+        return new DefaultKafkaConsumerFactory(props);
     }
 
     @Bean

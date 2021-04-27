@@ -14,7 +14,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-public class Pacs008PaymentTransactionRepositoryTest extends AbstractJpaRepositoryFactorySetup{
+public class Pacs008PaymentTransactionRepositoryTest extends AbstractJpaRepositoryFactorySetup {
 
     @Autowired
     private Pacs008PaymentTransactionRepository pacs008Repository;
@@ -24,7 +24,7 @@ public class Pacs008PaymentTransactionRepositoryTest extends AbstractJpaReposito
 
     @Test
     public void testInsert() {
-        getEntityManager().getTransaction().begin();
+        //getEntityManager().getTransaction().begin();
 
         InboundFile inboundFile =  new InboundFile();
         inboundFile.setFilename("testFilename");
@@ -38,11 +38,11 @@ public class Pacs008PaymentTransactionRepositoryTest extends AbstractJpaReposito
         pacs008PaymentTransaction.setServiceType(ServiceType.SCC);
         pacs008PaymentTransaction.setSettlementDate(new Date());
         pacs008PaymentTransaction.setInboundFile(inboundFile);
-        pacs008Repository.save(pacs008PaymentTransaction);
+        Pacs008PaymentTransaction entity = pacs008Repository.save(pacs008PaymentTransaction);
 
-        getEntityManager().getTransaction().commit();
+        //getEntityManager().getTransaction().commit();
 
-        Pacs008PaymentTransaction entity = pacs008Repository.findByUid(pacs008PaymentTransaction.getUid());
+        //Pacs008PaymentTransaction entity = pacs008Repository.findByUid(pacs008PaymentTransaction.getUid());
         Assertions.assertNotNull(entity);
         Assertions.assertEquals(pacs008PaymentTransaction, entity);
     }

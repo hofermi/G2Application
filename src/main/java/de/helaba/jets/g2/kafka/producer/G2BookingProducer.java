@@ -2,6 +2,8 @@ package de.helaba.jets.g2.kafka.producer;
 
 import de.helaba.jets.g2.kafka.avro.model.G2BookingAvroRecord;
 import de.helaba.jets.g2.kafka.event.G2BookingPayload;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -12,6 +14,8 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 
 @Component // to be used as @Autowired component
 public class G2BookingProducer {
+
+    private static final Log LOG = LogFactory.getLog(G2BookingProducer.class);
 
     @Autowired // defined in KafkaProducerConfig
     private KafkaTemplate<String, G2BookingAvroRecord> g2BookingKafkaTemplate;
@@ -26,15 +30,20 @@ public class G2BookingProducer {
         future.addCallback(new ListenableFutureCallback<>() {
             @Override
             public void onSuccess(SendResult<String, G2BookingAvroRecord> result) {
-                System.out.println(
-                        "Sent event=[" + g2BookingPayload + "] with offset=[" + result.getRecordMetadata().offset() + "]"
+                LOG.info(
+                        String.format(
+                                "Sent event=[%s] with offset=[%d]",
+                                g2BookingPayload,
+                                result.getRecordMetadata().offset()
+                        )
                 );
             }
 
             @Override
             public void onFailure(Throwable ex) {
-                System.out.println(
-                        "Unable to send event=[" + g2BookingPayload + "] due to : " + ex.getMessage()
+                LOG.error(
+                        String.format("Unable to send event=[%s]!", g2BookingPayload),
+                        ex
                 );
             }
         });

@@ -120,7 +120,8 @@ services:
     environment:
       KAFKA_BROKERS: >-
         kafka-0:29092,kafka-1:29092,kafka-2:29092
-      KAFKA_SCHEMAREGISTRY_URLS: "http://schema-registry:8081"
+      KAFKA_SCHEMAREGISTRY_URLS: >-
+        http://schema-registry:8081
     depends_on:
       - zookeeper
       - kafka-0

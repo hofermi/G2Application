@@ -4,7 +4,11 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
+import de.helaba.jets.g2.kafka.avro.model.AvroG2BookingRecord;
 import de.helaba.jets.g2.kafka.event.G2BookingPayload;
+import de.helaba.jets.g2.kafka.event.G2BookingPayloadBuilder;
+import de.helaba.jets.g2.kafka.event.G2BookingPayloadUtil;
+import de.helaba.jets.g2.kafka.event.MessageType;
 import de.helaba.jets.g2.kafka.producer.G2BookingProducer;
 import org.apache.commons.lang3.RandomUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +29,7 @@ public class MainView extends VerticalLayout {
     }
 
     private void sendRandomG2Booking() {
-        String creditorIban = String.format("DE%d020", RandomUtils.nextLong());
-        String debtorIban = String.format("DE%d020", RandomUtils.nextLong());
-        String amount = String.format("%.2f", RandomUtils.nextFloat(0.01f, 9999.99f));
-        G2BookingPayload g2BookingPayload = new G2BookingPayload(creditorIban, debtorIban, amount);
+        G2BookingPayload g2BookingPayload = G2BookingPayloadUtil.random();
         try {
             g2BookingProducer.send(g2BookingPayload);
             Notification.show(String.format("Sent event %s to kafka topic.", g2BookingPayload));
@@ -36,6 +37,21 @@ public class MainView extends VerticalLayout {
             e.printStackTrace();
             Notification.show(String.format("Error sending event %s to kafka topic: %s", g2BookingPayload, e.getMessage()));
         }
+    }
+
+    public static G2BookingPayload fromAvroRecord(AvroG2BookingRecord record) {
+        return
+                new G2BookingPayloadBuilder()
+                        .withKopfnummer(String.valueOf(record.getKopfnummer()))
+                        .withMessageType(MessageType.valueOf(record.getMessageType().name()))
+                        .withCreditorIban(String.valueOf(record.getCreditorIban()))
+                        .withDebtorIban(String.valueOf(record.getDebtorIban()))
+                        .withAmount(String.valueOf(record.getAmount()))
+                        .withBatchBooking(record.getIsBatchBooking())
+                        .withNoOfBatchBookingTransactions(record.getNoOfBatchBookingTransactions())
+                        .withBookingDate(record.getBookingDate())
+                        .withValuta(record.getValuta())
+                        .build();
     }
 
 }

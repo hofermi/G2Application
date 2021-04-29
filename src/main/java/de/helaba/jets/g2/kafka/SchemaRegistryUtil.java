@@ -1,6 +1,5 @@
 package de.helaba.jets.g2.kafka;
 
-import de.helaba.jets.g2.kafka.consumer.G2BookingConsumer;
 import io.confluent.kafka.schemaregistry.client.CachedSchemaRegistryClient;
 import io.confluent.kafka.schemaregistry.client.rest.exceptions.RestClientException;
 import java.io.IOException;

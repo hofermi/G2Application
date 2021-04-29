@@ -1,8 +1,20 @@
 {
     "type": "record",
     "namespace": "de.helaba.jets.g2.kafka.avro.model",
-    "name": "G2BookingAvroRecord",
+    "name": "AvroG2BookingRecord",
     "fields": [
+        {
+            "name": "kopfnummer",
+            "type": "string"
+        },
+        {
+            "name": "messageType",
+            "type": {
+                "name": "AvroMessageType",
+                "type": "enum",
+                "symbols": ["PACS002", "PACS003", "PACS004", "PACS007", "PACS008", "CAMT056"]
+            }
+        },
         {
             "name": "creditorIban",
             "type": "string"
@@ -14,6 +26,28 @@
         {
             "name": "amount",
             "type": "string"
+        },
+        {
+            "name": "isBatchBooking",
+            "type": "boolean"
+        },
+        {
+            "name": "noOfBatchBookingTransactions",
+            "type": "long"
+        },
+        {
+            "name": "bookingDate",
+            "type": {
+                "type": "int",
+                "logicalType": "date"
+            }
+        },
+        {
+            "name": "valuta",
+            "type": {
+                "type": "int",
+                "logicalType": "date"
+            }
         }
     ]
 }

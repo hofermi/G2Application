@@ -1,6 +1,6 @@
 package de.helaba.jets.g2.kafka.consumer;
 
-import de.helaba.jets.g2.kafka.avro.model.G2BookingAvroRecord;
+import de.helaba.jets.g2.kafka.avro.model.AvroG2BookingRecord;
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig;
 import io.confluent.kafka.serializers.KafkaAvroSerializerConfig;
@@ -33,7 +33,7 @@ public class KafkaConsumerConfig {
     private String schemaRegistryUrl;
 
     @Bean
-    public ConsumerFactory<String, G2BookingAvroRecord> consumerFactory() {
+    public ConsumerFactory<String, AvroG2BookingRecord> consumerFactory() {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
@@ -55,8 +55,8 @@ public class KafkaConsumerConfig {
     }
 
     @Bean
-    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, G2BookingAvroRecord>> kafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, G2BookingAvroRecord> factory =
+    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, AvroG2BookingRecord>> kafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, AvroG2BookingRecord> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
 

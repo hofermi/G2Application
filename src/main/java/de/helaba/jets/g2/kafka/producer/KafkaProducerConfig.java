@@ -1,6 +1,6 @@
 package de.helaba.jets.g2.kafka.producer;
 
-import de.helaba.jets.g2.kafka.avro.model.G2BookingAvroRecord;
+import de.helaba.jets.g2.kafka.avro.model.AvroG2BookingRecord;
 import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import io.confluent.kafka.serializers.KafkaAvroSerializerConfig;
@@ -25,7 +25,7 @@ public class KafkaProducerConfig {
     private String schemaRegistryUrl;
 
     @Bean
-    public ProducerFactory<String, G2BookingAvroRecord> producerFactory() {
+    public ProducerFactory<String, AvroG2BookingRecord> producerFactory() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -36,7 +36,7 @@ public class KafkaProducerConfig {
     }
 
     @Bean // to be used as @Autowired component
-    public KafkaTemplate<String, G2BookingAvroRecord> g2BookingKafkaTemplate() {
+    public KafkaTemplate<String, AvroG2BookingRecord> g2BookingKafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 

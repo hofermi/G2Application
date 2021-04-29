@@ -66,7 +66,7 @@ On first startup, topics must be created:
 1. Open a terminal
 
 
-    % docker exec -it docker_kafka-0_1 /opt/bitnami/kafka/bin/kafka-topics.sh --bootstrap-server kafka-0:29092,kafka-1:29092,kafka-2:29092 --create --partitions 4 --replication-factor 2 --topic g2-booking
+    % docker exec -it g2_kafka-0 /opt/bitnami/kafka/bin/kafka-topics.sh --bootstrap-server kafka-0:29092,kafka-1:29092,kafka-2:29092 --create --partitions 4 --replication-factor 2 --topic g2-booking
 
 #### Topics Overview
 | Topic name    | Partitions | Replication factor |

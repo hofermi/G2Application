@@ -1,8 +1,8 @@
 package de.helaba.jets.g2.kafka.consumer;
 
-import de.helaba.jets.g2.kafka.avro.model.G2BookingAvroRecord;
+import de.helaba.jets.g2.kafka.avro.model.AvroG2BookingRecord;
 import de.helaba.jets.g2.kafka.event.G2BookingPayload;
-import de.helaba.jets.g2.kafka.producer.G2BookingProducer;
+import de.helaba.jets.g2.kafka.event.G2BookingPayloadUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -23,11 +23,11 @@ public class G2BookingConsumer {
             autoStartup = "true"
     )
     public void listen(
-            @Payload G2BookingAvroRecord data,
+            @Payload AvroG2BookingRecord data,
             ConsumerRecordMetadata recordMetadata,
             Acknowledgment ack
     ) {
-        G2BookingPayload g2BookingPayload = G2BookingPayload.fromAvroRecord(data);
+        G2BookingPayload g2BookingPayload = G2BookingPayloadUtil.fromAvroRecord(data);
         LOG.info(
                 String.format(
                         "Received event=[%s] from [topic=%s, partition=%d, offset=%d]",

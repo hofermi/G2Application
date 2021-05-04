@@ -8,7 +8,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.listener.adapter.ConsumerRecordMetadata;
 import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 @Component // mandatory for using @KafkaListener
@@ -23,10 +22,13 @@ public class G2BookingConsumer {
             autoStartup = "true"
     )
     public void listen(
-            @Payload AvroG2BookingRecord data,
+            AvroG2BookingRecord data,
             ConsumerRecordMetadata recordMetadata,
             Acknowledgment ack
     ) {
+        //LOG.info(String.format("Receiving %d event(s)...", dataList.size()));
+        //Instant start = Instant.now();
+
         G2BookingPayload g2BookingPayload = G2BookingPayloadUtil.fromAvroRecord(data);
         LOG.info(
                 String.format(
@@ -37,7 +39,12 @@ public class G2BookingConsumer {
                         recordMetadata.offset()
                 )
         );
+        // TODO do anything with g2BookingPayload...
         ack.acknowledge(); // async commit
+
+        //Instant finish = Instant.now();
+        //long timeElapsed = Duration.between(start, finish).toMillis();
+        //LOG.info(String.format("Received %d event(s) in %d millis.", dataList.size(), timeElapsed));
     }
 
 }

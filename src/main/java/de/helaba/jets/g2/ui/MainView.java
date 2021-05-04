@@ -10,7 +10,8 @@ import de.helaba.jets.g2.kafka.event.G2BookingPayloadBuilder;
 import de.helaba.jets.g2.kafka.event.G2BookingPayloadUtil;
 import de.helaba.jets.g2.kafka.event.MessageType;
 import de.helaba.jets.g2.kafka.producer.G2BookingProducer;
-import org.apache.commons.lang3.RandomUtils;
+import java.time.Duration;
+import java.time.Instant;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -20,38 +21,33 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Route
 public class MainView extends VerticalLayout {
 
+    private final static int NO_OF_BATCH_EVENTS = 10;
+
     @Autowired
     G2BookingProducer g2BookingProducer;
 
     public MainView() {
         //add(new Button("Click me", e -> Notification.show("Hello, this is a G2 prototype!")));
-        add(new Button("Send event to kafka topic", e -> sendRandomG2Booking()));
+        add(new Button("Send event to kafka topic", e -> sendRandomG2Bookings(1)));
+        add(new Button(String.format("Send %d events to kafka topic", NO_OF_BATCH_EVENTS), e -> sendRandomG2Bookings(NO_OF_BATCH_EVENTS)));
     }
 
-    private void sendRandomG2Booking() {
-        G2BookingPayload g2BookingPayload = G2BookingPayloadUtil.random();
-        try {
-            g2BookingProducer.send(g2BookingPayload);
-            Notification.show(String.format("Sent event %s to kafka topic.", g2BookingPayload));
-        } catch(Exception e) {
-            e.printStackTrace();
-            Notification.show(String.format("Error sending event %s to kafka topic: %s", g2BookingPayload, e.getMessage()));
+    private void sendRandomG2Bookings(int noOfEvents) {
+        Instant start = Instant.now();
+        for (int i = 0; i < noOfEvents; i++) {
+            G2BookingPayload g2BookingPayload = G2BookingPayloadUtil.random();
+            try {
+                g2BookingProducer.send(g2BookingPayload);
+                //Notification.show(String.format("Sent event %s to kafka topic.", g2BookingPayload));
+            } catch (Exception e) {
+                e.printStackTrace();
+                Notification.show(String.format("Error sending event %s to kafka topic: %s", g2BookingPayload, e.getMessage()));
+                return;
+            }
         }
-    }
-
-    public static G2BookingPayload fromAvroRecord(AvroG2BookingRecord record) {
-        return
-                new G2BookingPayloadBuilder()
-                        .withKopfnummer(String.valueOf(record.getKopfnummer()))
-                        .withMessageType(MessageType.valueOf(record.getMessageType().name()))
-                        .withCreditorIban(String.valueOf(record.getCreditorIban()))
-                        .withDebtorIban(String.valueOf(record.getDebtorIban()))
-                        .withAmount(String.valueOf(record.getAmount()))
-                        .withBatchBooking(record.getIsBatchBooking())
-                        .withNoOfBatchBookingTransactions(record.getNoOfBatchBookingTransactions())
-                        .withBookingDate(record.getBookingDate())
-                        .withValuta(record.getValuta())
-                        .build();
+        Instant finish = Instant.now();
+        long timeElapsed = Duration.between(start, finish).toMillis();
+        Notification.show(String.format("Sent %d events to kafka topic in %d millis.", noOfEvents, timeElapsed));
     }
 
 }

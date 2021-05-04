@@ -31,13 +31,13 @@ public class G2BookingProducer {
         future.addCallback(new ListenableFutureCallback<>() {
             @Override
             public void onSuccess(SendResult<String, AvroG2BookingRecord> result) {
-                LOG.info(
-                        String.format(
-                                "Sent event=[%s] with offset=[%d]",
-                                g2BookingPayload,
-                                result.getRecordMetadata().offset()
-                        )
-                );
+                //LOG.info(
+                //        String.format(
+                //                "Sent event=[%s] with offset=[%d]",
+                //                g2BookingPayload,
+                //                result.getRecordMetadata().offset()
+                //        )
+                //);
             }
 
             @Override

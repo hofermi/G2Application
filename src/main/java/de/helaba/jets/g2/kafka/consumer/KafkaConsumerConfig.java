@@ -51,6 +51,8 @@ public class KafkaConsumerConfig {
         // instead use consumer.commitAsync() to commit offsets
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
 
+        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
+
         return new DefaultKafkaConsumerFactory(props);
     }
 
@@ -69,6 +71,9 @@ public class KafkaConsumerConfig {
 
         // manual committing offsets
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL);
+
+        // enable batch processing
+        //factory.setBatchListener(true);
 
         return factory;
     }

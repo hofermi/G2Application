@@ -1,7 +1,7 @@
 # Local Setup
 
 ## Create Directories
-Create the following directories:
+Create the following directories: (__currently not used__)
 
     ~/docker/volumes/mariadb
     ~/docker/volumes/zookeeper
@@ -29,13 +29,14 @@ These directories are used as volumes for the associated docker containers.
 5. Following docker containers are started
 
 
-    CONTAINER ID   IMAGE                                      COMMAND                  CREATED         STATUS         PORTS                                                  NAMES
-    65755f97155b   mariadb:10.5.9                             "docker-entrypoint.s…"   9 minutes ago   Up 9 minutes   0.0.0.0:3306->3306/tcp                                 docker_mariadb_1
-    a60b3313f136   bitnami/zookeeper:3.7.0                    "/opt/bitnami/script…"   9 minutes ago   Up 9 minutes   2888/tcp, 3888/tcp, 0.0.0.0:2181->2181/tcp, 8080/tcp   docker_zookeeper_1
-    b079fb65c58c   bitnami/kafka:2.8.0                        "/opt/bitnami/script…"   9 minutes ago   Up 8 minutes   0.0.0.0:9092->9092/tcp                                 docker_kafka-0_1
-    f88eac9a8274   bitnami/kafka:2.8.0                        "/opt/bitnami/script…"   9 minutes ago   Up 8 minutes   9092/tcp, 0.0.0.0:9093->9093/tcp                       docker_kafka-1_1
-    95bc1e8403d2   bitnami/kafka:2.8.0                        "/opt/bitnami/script…"   9 minutes ago   Up 8 minutes   9092/tcp, 0.0.0.0:9094->9094/tcp                       docker_kafka-2_1
-    88adb314a201   obsidiandynamics/kafdrop:3.28.0-SNAPSHOT   "/kafdrop.sh"            9 minutes ago   Up 8 minutes   0.0.0.0:9000->9000/tcp                                 docker_kafdrop_1
+    CONTAINER ID   IMAGE                                   COMMAND                  CREATED         STATUS                   PORTS                                        NAMES
+    16833e1f3648   mariadb:10.5.9                          "docker-entrypoint.s…"   2 minutes ago   Up 2 minutes             0.0.0.0:3306->3306/tcp                       g2_mariadb
+    f89e102ae3e8   confluentinc/cp-zookeeper:6.0.2         "/etc/confluent/dock…"   2 minutes ago   Up 2 minutes (healthy)   2888/tcp, 0.0.0.0:2181->2181/tcp, 3888/tcp   g2_zookeeper
+    28f790911692   bitnami/kafka:2.8.0                     "/opt/bitnami/script…"   2 minutes ago   Up About a minute        0.0.0.0:9092->9092/tcp                       g2_kafka-0
+    38bb75b89756   bitnami/kafka:2.8.0                     "/opt/bitnami/script…"   2 minutes ago   Up About a minute        9092/tcp, 0.0.0.0:9093->9093/tcp             g2_kafka-1
+    a681d5abdae5   bitnami/kafka:2.8.0                     "/opt/bitnami/script…"   2 minutes ago   Up About a minute        9092/tcp, 0.0.0.0:9094->9094/tcp             g2_kafka-2
+    caf36caa3185   confluentinc/cp-schema-registry:6.0.2   "/etc/confluent/dock…"   2 minutes ago   Up About a minute        0.0.0.0:8081->8081/tcp                       g2_schema-registry
+    6d0e949e842f   quay.io/cloudhut/kowl:v1.3.1            "./kowl"                 2 minutes ago   Up About a minute        0.0.0.0:9000->8080/tcp                       g2_kowl
 
 ### MariaDB
 #### MariaDB connection string
@@ -48,30 +49,19 @@ These directories are used as volumes for the associated docker containers.
     password: g2-prototype-pw
 
 ### Kafka
-There are three Kafka-Broker.
+#### Kafka Broker
 
-| Kafka-Broker | Docker container | Port | Access URL (via hostname) |
-| ------------ | ---------------- | ---- | ------------------------- |
-| kafka-0      | docker_kafka-0_1 | 9092 | kafka-0:29092             |
-| kafka-1      | docker_kafka-1_1 | 9093 | kafka-1:29092             |
-| kafka-2      | docker_kafka-2_1 | 9094 | kafka-2:29092             |
+| Kafka-Broker | Docker container | Access from within docker | Access from host |
+| ------------ | ---------------- | ------------------------- | ---------------- |
+| kafka-0      | g2_kafka-0       | kafka-0:29092             | localhost:9092   |
+| kafka-1      | g2_kafka-1       | kafka-1:29092             | localhost:9093   |
+| kafka-2      | g2_kafka-2       | kafka-2:29092             | localhost:9094   |
 
-### Kafdrop
-Access [Kafdrop GUI](http://localhost:9000/) via  
+### Kowl
+Access [Kowl GUI](http://localhost:9000/) via  
 
     http://localhost:9000/
 
-### Kafka Topics
-On first startup, topics must be created:
-1. Open a terminal
-
-
-    % docker exec -it g2_kafka-0 /opt/bitnami/kafka/bin/kafka-topics.sh --bootstrap-server kafka-0:29092,kafka-1:29092,kafka-2:29092 --create --partitions 4 --replication-factor 2 --topic g2-booking
-
-#### Topics Overview
-| Topic name    | Partitions | Replication factor |
-| ------------- | ---------: | -----------------: |
-| g2-booking    | 4          | 2                  |
 
 ## Stop Docker Containers
 1. Open a terminal
@@ -86,11 +76,17 @@ On first startup, topics must be created:
 4.     % docker compose down -v  
 
 
-## Write schema to schema registry:
+## G2Application
+### Kafka Topics
+These kafka topics are automatically created on startup of G2Application:
 
-Schema must be registered once, so that avro serialization/deserialization is possible
+| Topic name    | Partitions | Replication factor |
+| ------------- | ---------: | -----------------: |
+| g2-booking    | 4          | 3                  |
 
-1. Docker container for schema registry must be running
+### Schema registry
+These avro schemas are automatically registered on startup of G2Application:
 
-
-2. Run SchemaRegistryUtil
+| Subject          | Topic name |
+| ---------------- | ---------- |
+| g2-booking-value | g2-booking |

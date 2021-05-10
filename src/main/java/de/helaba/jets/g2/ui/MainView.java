@@ -4,14 +4,13 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
-import de.helaba.jets.g2.kafka.avro.model.AvroG2BookingRecord;
 import de.helaba.jets.g2.kafka.event.G2BookingPayload;
-import de.helaba.jets.g2.kafka.event.G2BookingPayloadBuilder;
 import de.helaba.jets.g2.kafka.event.G2BookingPayloadUtil;
-import de.helaba.jets.g2.kafka.event.MessageType;
 import de.helaba.jets.g2.kafka.producer.G2BookingProducer;
+import de.helaba.jets.g2.kafka.stream.G2BookingStreamer;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.concurrent.ExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -26,10 +25,14 @@ public class MainView extends VerticalLayout {
     @Autowired
     G2BookingProducer g2BookingProducer;
 
+    @Autowired
+    G2BookingStreamer g2BookingStreamer;
+
     public MainView() {
         //add(new Button("Click me", e -> Notification.show("Hello, this is a G2 prototype!")));
         add(new Button("Send event to kafka topic", e -> sendRandomG2Bookings(1)));
         add(new Button(String.format("Send %d events to kafka topic", NO_OF_BATCH_EVENTS), e -> sendRandomG2Bookings(NO_OF_BATCH_EVENTS)));
+        add(new Button("Process KSQL query", e -> processStreamQuery()));
     }
 
     private void sendRandomG2Bookings(int noOfEvents) {
@@ -48,6 +51,18 @@ public class MainView extends VerticalLayout {
         Instant finish = Instant.now();
         long timeElapsed = Duration.between(start, finish).toMillis();
         Notification.show(String.format("Sent %d events to kafka topic in %d millis.", noOfEvents, timeElapsed));
+    }
+
+    private void processStreamQuery() {
+        /*
+        try {
+            g2BookingStreamer.startProcessing();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+         */
     }
 
 }

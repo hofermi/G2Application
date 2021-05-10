@@ -70,7 +70,7 @@ public class KafkaSchemaConfiguration {
         try {
             return schemaRegistryClient.getLatestSchemaMetadata(subject).getVersion();
         } catch(RestClientException e) {
-            if (e.getMessage().contains(String.format("Subject %s not found", subject))) { // Subject not found.; error code: 40401
+            if (e.getMessage().contains(String.format("Subject '%s' not found", subject))) { // Subject not found.; error code: 40401
                 return null;
             }
             throw e;

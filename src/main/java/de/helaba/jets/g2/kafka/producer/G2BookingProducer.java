@@ -26,7 +26,11 @@ public class G2BookingProducer {
 
     public void send(G2BookingPayload g2BookingPayload) {
         ListenableFuture<SendResult<String, AvroG2BookingRecord>>future =
-                g2BookingKafkaTemplate.send(g2BookingTopicName, G2BookingPayloadUtil.toAvroRecord(g2BookingPayload));
+                g2BookingKafkaTemplate.send(
+                        g2BookingTopicName,
+                        g2BookingPayload.getKopfnummer(), // key
+                        G2BookingPayloadUtil.toAvroRecord(g2BookingPayload) // value
+                );
 
         future.addCallback(new ListenableFutureCallback<>() {
             @Override

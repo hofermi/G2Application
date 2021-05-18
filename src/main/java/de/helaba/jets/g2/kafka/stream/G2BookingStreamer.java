@@ -30,7 +30,7 @@ public class G2BookingStreamer {
     @Value(value = "${kafka.topic.g2Booking.name}") // configured in application.properties
     private String g2BookingTopicName;
 
-    @Bean("g2BookingStreamTopology")
+    @Bean("g2BookingStream")
     public KStream<String, GenericRecord> startProcessing(@Qualifier("g2BookingStreamBuilder") StreamsBuilder builder) {
         final Map<String, String> serdeConfig =
                 Collections.singletonMap(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl);
@@ -41,13 +41,12 @@ public class G2BookingStreamer {
                 builder
                         .stream(g2BookingTopicName, Consumed.with(Serdes.String(), valueGenericAvroSerde));
 
-        kStream
-                .
-                .map((key, value) -> { // do something with each msg, square the values in our case
-                    //return KeyValue.pair(key, value * value);
-                    LOG.info(String.format("Received stream row with key %s: %s", key, value.toString()));
-                    return null;
-                });
+        //kStream
+        //        .map((key, value) -> { // do something with each msg, square the values in our case
+        //            //return KeyValue.pair(key, value * value);
+        //            LOG.info(String.format("Received stream row with key %s: %s", key, value.toString()));
+        //            return null;
+        //        });
 
         return kStream;
     }

@@ -22,6 +22,8 @@
         <java.version>11</java.version>
         <vaadin.version>14.5.2</vaadin.version>
         <mariadb.version>2.7.2</mariadb.version>
+        <!-- spring version 2.4.5 is compatible to kafka version 6.0.x. -->
+        <confluent.kafka.version>6.0.2</confluent.kafka.version> <!-- must not be named kafka.version, leading to errors! -->
         <avro.version>1.10.2</avro.version>
     </properties>
 
@@ -95,13 +97,18 @@
         </dependency>
 
         <!-- kafka + avro -->
-<!--        <dependency>-->
-<!--            <groupId>org.apache.kafka</groupId>-->
-<!--            <artifactId>kafka-streams</artifactId>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.cloud</groupId>-->
+<!--            <artifactId>spring-cloud-stream</artifactId>-->
+<!--            <version>3.1.2</version>-->
+<!--        </dependency>-->
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-streams</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.avro</groupId>
@@ -110,7 +117,7 @@
         </dependency>
         <!--
             needed, if using KafkaAvroSerializer and KafkaAvroDeserializer
-            currently not used for simplicity; if using KafkaAvroSerializer and KafkaAvroDeserializer
+            if using KafkaAvroSerializer and KafkaAvroDeserializer
             you need a schema registry
          -->
         <dependency>
@@ -121,6 +128,11 @@
         <dependency>
             <groupId>io.confluent</groupId>
             <artifactId>kafka-schema-registry-client</artifactId>
+            <version>5.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.confluent</groupId>
+            <artifactId>kafka-streams-avro-serde</artifactId>
             <version>5.3.0</version>
         </dependency>
 <!--        <dependency>-->

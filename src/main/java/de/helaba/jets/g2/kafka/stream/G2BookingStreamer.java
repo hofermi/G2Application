@@ -11,6 +11,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.kstream.Consumed;
@@ -43,30 +44,45 @@ public class G2BookingStreamer {
         final Serde<GenericRecord> valueGenericAvroSerde = new GenericAvroSerde();
         valueGenericAvroSerde.configure(serdeConfig, false); // `false` for record values
 
+        // all G2Bookings
         final KStream<String, GenericRecord> g2BookingRecords =
-                builder.stream(g2BookingTopicName, Consumed.with(Serdes.String(), valueGenericAvroSerde));
-
-        final KStream<String, GenericRecord> relevantG2BookingRecords =
-                g2BookingRecords
+                builder
+                        .stream(g2BookingTopicName, Consumed.with(Serdes.String(), valueGenericAvroSerde))
+                        // filter is used for logging
                         .filter(
                                 (kopfnummer, record) -> {
-                                    AvroMessageType messageType = ((AvroG2BookingRecord) record).getMessageType();
-                                    switch (messageType) {
-                                        case PACS003:
-                                        case PACS008:
-                                            return true;
-                                        default:
-                                            return false;
-                                    }
+                                    LOG.info(
+                                            String.format(
+                                                    "Stream g2BookingRecords: Received record: %s",
+                                                    ((AvroG2BookingRecord) record).toString()
+                                            )
+                                    );
+                                    return true;
                                 }
                         );
-        //.map((kopfnummer, record) -> KeyValue.pair(kopfnummer, ((AvroG2BookingRecord) record).getAmount()));
 
-        final KGroupedStream<String, Long> g2BookingRecordsCounts =
-                relevantG2BookingRecords
-                        .toTable(Named.as("bookings"))
-                        .groupBy((kopfnummer, record) -> kopfnummer)
-                        .count(Named.as("no-of-bookings-per-kopfnummer"));
+        // all G2Bookings for pacs.003 and pacs.008
+        //final KStream<String, GenericRecord> relevantG2BookingRecords =
+        //        g2BookingRecords
+        //                .filter(
+        //                        (kopfnummer, record) -> {
+        //                            AvroMessageType messageType = ((AvroG2BookingRecord) record).getMessageType();
+        //                            switch (messageType) {
+        //                                case PACS003:
+        //                                case PACS008:
+        //                                    return true;
+        //                                default:
+        //                                    return false;
+        //                            }
+        //                        }
+        //                );
+
+        //final KGroupedStream<String, Long> g2BookingRecordsCounts =
+        //        relevantG2BookingRecords
+        //                .gr
+        //                .toTable(Named.as("bookings"))
+        //                .groupBy((kopfnummer, record) -> kopfnummer)
+        //                .count(Named.as("no-of-bookings-per-kopfnummer"));
 
         //kStream
         //        .map((key, value) -> { // do something with each msg, square the values in our case
@@ -75,6 +91,7 @@ public class G2BookingStreamer {
         //            return null;
         //        });
 
+        /*
         KStream<String, PlayEvent> playEvents =
                 builder.stream(Serdes.String(), playEventSerde, "play-events");
 
@@ -89,8 +106,13 @@ public class G2BookingStreamer {
         KGroupedTable<Long, Long> groupedBySongId =
                 songPlays.groupBy((songId, song) -> songId, Serdes.Long(), Serdes.Long());
         groupedBySongId.count(Named.as("song-play-count"));
+         */
 
-        return kStream;
+        // Start an instance of the topology
+        //KafkaStreams streams = new KafkaStreams(builder.build(), props);
+        //streams.start();
+
+        return g2BookingRecords;
     }
 
 }

@@ -43,7 +43,7 @@ public class MainView extends VerticalLayout {
         //add(new Button("Click me", e -> Notification.show("Hello, this is a G2 prototype!")));
         add(new Button("Send event to kafka topic", e -> sendRandomG2Bookings(1)));
         add(new Button(String.format("Send %d events to kafka topic", NO_OF_BATCH_EVENTS), e -> sendRandomG2Bookings(NO_OF_BATCH_EVENTS)));
-        add(new Button("Process KSQL query", e -> processStreamQuery()));
+        add(new Button("Print current stream state stores", e -> printStreamStateStores()));
     }
 
     private void sendRandomG2Bookings(int noOfEvents) {
@@ -64,7 +64,7 @@ public class MainView extends VerticalLayout {
         Notification.show(String.format("Sent %d events to kafka topic in %d millis.", noOfEvents, timeElapsed));
     }
 
-    private void processStreamQuery() {
+    private void printStreamStateStores() {
         /*
         KTable<String, Long> kopfnummerCounts =
                 g2BookingStream

@@ -3,26 +3,15 @@ package de.helaba.jets.g2.kafka.stream;
 import de.helaba.jets.g2.kafka.avro.model.AvroG2BookingRecord;
 import de.helaba.jets.g2.kafka.avro.model.AvroMessageType;
 import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
-import io.confluent.kafka.serializers.KafkaAvroSerializerConfig;
-import io.confluent.kafka.streams.serdes.avro.GenericAvroSerde;
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
 import java.util.Collections;
 import java.util.Map;
-import org.apache.avro.generic.GenericRecord;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.streams.KafkaStreams;
-import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.kstream.Consumed;
-import org.apache.kafka.streams.kstream.KGroupedStream;
-import org.apache.kafka.streams.kstream.KGroupedTable;
 import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.KTable;
-import org.apache.kafka.streams.kstream.Named;
-import org.apache.kafka.streams.kstream.Produced;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -121,10 +110,6 @@ public class G2BookingStreamer {
                 songPlays.groupBy((songId, song) -> songId, Serdes.Long(), Serdes.Long());
         groupedBySongId.count(Named.as("song-play-count"));
          */
-
-        // Start an instance of the topology
-        //KafkaStreams streams = new KafkaStreams(builder.build(), props);
-        //streams.start();
 
         return g2BookingRecords;
     }

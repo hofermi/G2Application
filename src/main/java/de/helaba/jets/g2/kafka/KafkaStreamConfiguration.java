@@ -1,7 +1,9 @@
 package de.helaba.jets.g2.kafka;
 
+import de.helaba.jets.g2.kafka.avro.model.AvroG2BookingRecord;
 import io.confluent.kafka.serializers.KafkaAvroSerializerConfig;
 import io.confluent.kafka.streams.serdes.avro.GenericAvroSerde;
+import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;

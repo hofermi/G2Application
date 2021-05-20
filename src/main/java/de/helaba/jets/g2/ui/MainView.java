@@ -37,7 +37,7 @@ public class MainView extends VerticalLayout {
     G2BookingStreamer g2BookingStreamer;
 
     @Autowired
-    KStream<String, GenericRecord> g2BookingStream;
+    KStream<String, AvroG2BookingRecord> g2BookingStream;
 
     public MainView() {
         //add(new Button("Click me", e -> Notification.show("Hello, this is a G2 prototype!")));

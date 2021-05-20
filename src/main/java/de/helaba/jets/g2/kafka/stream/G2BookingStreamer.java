@@ -2,8 +2,10 @@ package de.helaba.jets.g2.kafka.stream;
 
 import de.helaba.jets.g2.kafka.avro.model.AvroG2BookingRecord;
 import de.helaba.jets.g2.kafka.avro.model.AvroMessageType;
+import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
 import io.confluent.kafka.serializers.KafkaAvroSerializerConfig;
 import io.confluent.kafka.streams.serdes.avro.GenericAvroSerde;
+import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
 import java.util.Collections;
 import java.util.Map;
 import org.apache.avro.generic.GenericRecord;
@@ -38,44 +40,56 @@ public class G2BookingStreamer {
     private String g2BookingTopicName;
 
     @Bean("g2BookingStream")
-    public KStream<String, GenericRecord> startProcessing(@Qualifier("g2BookingStreamBuilder") StreamsBuilder builder) {
+    public KStream<String, AvroG2BookingRecord> startProcessing(@Qualifier("g2BookingStreamBuilder") StreamsBuilder builder) {
         final Map<String, String> serdeConfig =
-                Collections.singletonMap(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl);
-        final Serde<GenericRecord> valueGenericAvroSerde = new GenericAvroSerde();
-        valueGenericAvroSerde.configure(serdeConfig, false); // `false` for record values
+                Collections.singletonMap(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl);
+        final SpecificAvroSerde<AvroG2BookingRecord> g2BookingSerde = new SpecificAvroSerde<>();
+        g2BookingSerde.configure(serdeConfig, false); // `false` for record values
 
         // all G2Bookings
-        final KStream<String, GenericRecord> g2BookingRecords =
+        final KStream<String, AvroG2BookingRecord> g2BookingRecords =
                 builder
-                        .stream(g2BookingTopicName, Consumed.with(Serdes.String(), valueGenericAvroSerde))
+                        .stream(g2BookingTopicName, Consumed.with(Serdes.String(), g2BookingSerde))
                         // filter is used for logging
                         .filter(
                                 (kopfnummer, record) -> {
-                                    LOG.info(
-                                            String.format(
-                                                    "Stream g2BookingRecords: Received record: %s",
-                                                    ((AvroG2BookingRecord) record).toString()
-                                            )
-                                    );
+                                    //LOG.info(
+                                    //        String.format(
+                                    //                "Stream g2BookingRecords: Received record: %s",
+                                    //                record.toString()
+                                    //        )
+                                    //);
                                     return true;
                                 }
                         );
 
         // all G2Bookings for pacs.003 and pacs.008
-        //final KStream<String, GenericRecord> relevantG2BookingRecords =
-        //        g2BookingRecords
-        //                .filter(
-        //                        (kopfnummer, record) -> {
-        //                            AvroMessageType messageType = ((AvroG2BookingRecord) record).getMessageType();
-        //                            switch (messageType) {
-        //                                case PACS003:
-        //                                case PACS008:
-        //                                    return true;
-        //                                default:
-        //                                    return false;
-        //                            }
-        //                        }
-        //                );
+        final KStream<String, AvroG2BookingRecord> relevantG2BookingRecords =
+                g2BookingRecords
+                        .filter(
+                                (kopfnummer, record) -> {
+                                    AvroMessageType messageType = record.getMessageType();
+                                    switch (messageType) {
+                                        case PACS003:
+                                        case PACS008:
+                                            return true;
+                                        default:
+                                            return false;
+                                    }
+                                }
+                        )
+                        // filter is used for logging
+                        .filter(
+                                (kopfnummer, record) -> {
+                                    LOG.info(
+                                            String.format(
+                                                    "Stream relevantG2BookingRecords: Received record: %s",
+                                                    record.toString()
+                                            )
+                                    );
+                                    return true;
+                                }
+                        );
 
         //final KGroupedStream<String, Long> g2BookingRecordsCounts =
         //        relevantG2BookingRecords

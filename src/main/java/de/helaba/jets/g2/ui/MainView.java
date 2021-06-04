@@ -11,13 +11,14 @@ import de.helaba.jets.g2.kafka.producer.G2BookingProducer;
 import de.helaba.jets.g2.kafka.stream.G2BookingStreamer;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.concurrent.ExecutionException;
-import org.apache.avro.generic.GenericRecord;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.KTable;
+import org.apache.kafka.streams.state.HostInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.stream.binder.kafka.streams.InteractiveQueryService;
 
 /**
  * access main view via:
@@ -31,13 +32,34 @@ public class MainView extends VerticalLayout {
     private final static int NO_OF_BATCH_EVENTS = 10;
 
     @Autowired
-    G2BookingProducer g2BookingProducer;
+    private G2BookingProducer g2BookingProducer;
 
     @Autowired
-    G2BookingStreamer g2BookingStreamer;
+    private G2BookingStreamer g2BookingStreamer;
 
     @Autowired
-    KStream<String, AvroG2BookingRecord> g2BookingStream;
+    private KStream<String, AvroG2BookingRecord> g2BookingStream;
+
+    @Autowired
+    private InteractiveQueryService interactiveQueryService;
+
+    @Autowired
+    private KTable<String, Long> groupedRelevantG2BookingStream;
+
+    //@Autowired
+    //private KafkaStreamsRegistry kafkaStreamsRegistry;
+    //
+    //@Autowired
+    //private KafkaStreamsBinderConfigurationProperties binderConfigurationProperties;
+
+    //@Autowired
+    //private KafkaStreams kafkaStreams;
+
+    //@Autowired
+    //private ProcessorContext processorContext;
+
+    @Value(value = "${kafka.stream.store.g2BookingsCounter}") // configured in application.properties
+    private String g2BookingsCounterStoreName;
 
     public MainView() {
         //add(new Button("Click me", e -> Notification.show("Hello, this is a G2 prototype!")));
@@ -65,22 +87,69 @@ public class MainView extends VerticalLayout {
     }
 
     private void printStreamStateStores() {
+        LOG.info("Store name: " + groupedRelevantG2BookingStream.queryableStoreName());
+        //StateStore stateStore = processorContext.getStateStore(g2BookingsCounterStoreName);
+        //LOG.info("State store: " + stateStore.name());
         /*
-        KTable<String, Long> kopfnummerCounts =
-                g2BookingStream
-                        .flatMapValues(value -> String.valueOf(((AvroG2BookingRecord) value).getKopfnummer())) // list of Kopfnummern
-                        .groupBy((key, kopfnummer) -> kopfnummer)
-                        .count();
+        groupedRelevantG2BookingStream
+                .toStream()
+                // filter is used for logging
+                .filter(
+                      (kopfnummer, count) -> {
+                          LOG.info(
+                                  String.format(
+                                          "KTable groupedRelevantG2BookingStream: (%s, %d)",
+                                          kopfnummer,
+                                          count
+                                  )
+                          );
+                          return true;
+                      }
+                );
+         */
 
-        kopfnummerCounts.
-                .foreach((kopfnummer, count) -> System.out.println("kopfnummer: " + kopfnummer + " -> " + count));
+        HostInfo hostInfo = interactiveQueryService.getCurrentHostInfo();
+        LOG.info("Host: " + hostInfo);
 
-        //g2BookingStream
-        //        .map((key, value) -> { // do something with each msg, square the values in our case
-        //            //return KeyValue.pair(key, value * value);
-        //            LOG.info(String.format("Received stream row with key %s: %s", key, value.toString()));
-        //            return null;
-        //        });
+
+        //kafkaStreamsRegistry.getKafkaStreams().forEach((k) -> {
+        //    KeyQueryMetadata keyQueryMetadata = k.queryMetadataForKey(store, key, serializer);
+        //    if (keyQueryMetadata != null) {
+        //        kafkaStreamsAtomicReference.set(k);
+        //    }
+        //
+        //});
+
+        //ReadOnlyKeyValueStore<String, Long> keyValueStore =
+        //ReadOnlyKeyValueStore<Object, Object> keyValueStore =
+        //        interactiveQueryService.getQueryableStore(
+        //                g2BookingsCounterStoreName,
+        //                QueryableStoreTypes.keyValueStore()
+        //        );
+
+        //LOG.info(String.format("%s", keyValueStore.get("2020")));
+
+        //for (KeyValueIterator<Object, Object> it = keyValueStore.all(); it.hasNext(); ) {
+        //    KeyValue<Object, Object> entry = it.next();
+        //    LOG.info(String.format("%s: %s", entry.key, entry.value));
+        //}
+
+        /*
+        // Get the key-value store CountsKeyValueStore
+        ReadOnlyKeyValueStore<String, Long> keyValueStore =
+                streams.store("CountsKeyValueStore", QueryableStoreTypes.keyValueStore());
+
+        // Get value by key
+        System.out.println("count for hello:" + keyValueStore.get("hello"));
+
+        // Get the values for a range of keys available in this application instance
+        KeyValueIterator<String, Long> range = keyValueStore.range("all", "streams");
+        while (range.hasNext()) {
+            KeyValue<String, Long> next = range.next();
+            System.out.println("count for " + next.key + ": " + next.value);
+        }
+        // close the iterator to release resources
+        range.close();
          */
     }
 

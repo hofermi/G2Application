@@ -35,16 +35,17 @@ public class KafkaStreamConfiguration {
         return new StreamsConfig(config);
     }
 
-    public void setDefaults(Map<String, Object> config) {
+    private void setDefaults(Map<String, Object> config) {
         config.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
         config.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, GenericAvroSerde.class);
         config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         config.put(StreamsConfig.DEFAULT_TIMESTAMP_EXTRACTOR_CLASS_CONFIG, FailOnInvalidTimestamp.class);
         config.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, brokersUrl);
+        config.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 1);
         config.put(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl);
     }
 
-    @Bean("g2BookingStreamBuilder")
+    @Bean("g2BookingStreamBuilderFactory")
     public StreamsBuilderFactoryBean app1StreamBuilderFactoryBean() {
         Map<String, Object> config = new HashMap<>();
         setDefaults(config);

@@ -59,7 +59,7 @@ public class MainView extends VerticalLayout {
 
     //@Autowired
     //private KafkaStreamsRegistry kafkaStreamsRegistry;
-    //
+
     //@Autowired
     //private KafkaStreamsBinderConfigurationProperties binderConfigurationProperties;
 

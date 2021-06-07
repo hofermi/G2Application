@@ -16,6 +16,7 @@ import org.apache.kafka.streams.kstream.Grouped;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.KTable;
 import org.apache.kafka.streams.kstream.Materialized;
+import org.apache.kafka.streams.kstream.Named;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.StoreBuilder;
 import org.apache.kafka.streams.state.Stores;
@@ -85,7 +86,6 @@ public class G2BookingStreamer {
                         )
                         .groupBy((kopfnummer, record) -> kopfnummer, Grouped.with(Serdes.String(), g2BookingSerde))
                         // write to key-value store
-                        //.count();
                         .count(
                                 Materialized
                                         .<String, Long, KeyValueStore<Bytes, byte[]>>as("newG2BookingsCounterStore")
@@ -98,16 +98,6 @@ public class G2BookingStreamer {
         //            System.out.println("Key: " + key + " Value: " + value);
         //        });
     }
-
-    //@Bean
-    //public StoreBuilder myG2BookingsCounterStore() {
-    //    return Stores.keyValueStoreBuilder(
-    //            Stores.persistentKeyValueStore("newG2BookingsCounterStore"),
-    //            Serdes.String(),
-    //            Serdes.Long()
-    //    );
-    //}
-
 
 
     //@Bean

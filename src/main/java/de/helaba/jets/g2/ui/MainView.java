@@ -13,12 +13,19 @@ import java.time.Duration;
 import java.time.Instant;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.kafka.streams.KafkaStreams;
+import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.KTable;
 import org.apache.kafka.streams.state.HostInfo;
+import org.apache.kafka.streams.state.KeyValueIterator;
+import org.apache.kafka.streams.state.QueryableStoreTypes;
+import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.stream.binder.kafka.streams.InteractiveQueryService;
+import org.springframework.kafka.config.StreamsBuilderFactoryBean;
 
 /**
  * access main view via:
@@ -34,17 +41,21 @@ public class MainView extends VerticalLayout {
     @Autowired
     private G2BookingProducer g2BookingProducer;
 
-    @Autowired
-    private G2BookingStreamer g2BookingStreamer;
+    //@Autowired
+    //private G2BookingStreamer g2BookingStreamer;
 
-    @Autowired
-    private KStream<String, AvroG2BookingRecord> g2BookingStream;
+    //@Autowired
+    //private KStream<String, AvroG2BookingRecord> g2BookingStream;
 
     @Autowired
     private InteractiveQueryService interactiveQueryService;
 
-    @Autowired
-    private KTable<String, Long> groupedRelevantG2BookingStream;
+    //@Autowired
+    //@Qualifier("oldG2BookingStreamBuilderFactory")
+    //private StreamsBuilderFactoryBean oldG2BookingStreamBuilderFactory;
+
+    //@Autowired
+    //private KTable<String, Long> groupedRelevantG2BookingStream;
 
     //@Autowired
     //private KafkaStreamsRegistry kafkaStreamsRegistry;
@@ -87,7 +98,7 @@ public class MainView extends VerticalLayout {
     }
 
     private void printStreamStateStores() {
-        LOG.info("Store name: " + groupedRelevantG2BookingStream.queryableStoreName());
+        //LOG.info("Store name: " + groupedRelevantG2BookingStream.queryableStoreName());
         //StateStore stateStore = processorContext.getStateStore(g2BookingsCounterStoreName);
         //LOG.info("State store: " + stateStore.name());
         /*
@@ -108,8 +119,8 @@ public class MainView extends VerticalLayout {
                 );
          */
 
-        HostInfo hostInfo = interactiveQueryService.getCurrentHostInfo();
-        LOG.info("Host: " + hostInfo);
+        //HostInfo hostInfo = interactiveQueryService.getCurrentHostInfo();
+        //LOG.info("Host: " + hostInfo);
 
 
         //kafkaStreamsRegistry.getKafkaStreams().forEach((k) -> {
@@ -120,19 +131,23 @@ public class MainView extends VerticalLayout {
         //
         //});
 
+        //KafkaStreams kafkaStreams = oldG2BookingStreamBuilderFactory.getKafkaStreams();
+        //System.out.println("State: " + kafkaStreams.state());
+        //kafkaStreams.store("newG2BookingsCounterStore", QueryableStoreTypes.keyValueStore());
+
         //ReadOnlyKeyValueStore<String, Long> keyValueStore =
-        //ReadOnlyKeyValueStore<Object, Object> keyValueStore =
-        //        interactiveQueryService.getQueryableStore(
-        //                g2BookingsCounterStoreName,
-        //                QueryableStoreTypes.keyValueStore()
-        //        );
+        ReadOnlyKeyValueStore<Object, Object> keyValueStore =
+                interactiveQueryService.getQueryableStore(
+                        "newG2BookingsCounterStore",
+                        QueryableStoreTypes.keyValueStore()
+                );
 
         //LOG.info(String.format("%s", keyValueStore.get("2020")));
 
-        //for (KeyValueIterator<Object, Object> it = keyValueStore.all(); it.hasNext(); ) {
-        //    KeyValue<Object, Object> entry = it.next();
-        //    LOG.info(String.format("%s: %s", entry.key, entry.value));
-        //}
+        for (KeyValueIterator<Object, Object> it = keyValueStore.all(); it.hasNext(); ) {
+            KeyValue<Object, Object> entry = it.next();
+            LOG.info(String.format("%s: %s", entry.key, entry.value));
+        }
 
         /*
         // Get the key-value store CountsKeyValueStore

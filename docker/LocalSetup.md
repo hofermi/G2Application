@@ -29,14 +29,14 @@ These directories are used as volumes for the associated docker containers.
 5. Following docker containers are started
 
 
-    CONTAINER ID   IMAGE                                   COMMAND                  CREATED         STATUS                   PORTS                                        NAMES
-    16833e1f3648   mariadb:10.5.9                          "docker-entrypoint.s…"   2 minutes ago   Up 2 minutes             0.0.0.0:3306->3306/tcp                       g2_mariadb
-    f89e102ae3e8   confluentinc/cp-zookeeper:6.0.2         "/etc/confluent/dock…"   2 minutes ago   Up 2 minutes (healthy)   2888/tcp, 0.0.0.0:2181->2181/tcp, 3888/tcp   g2_zookeeper
-    28f790911692   bitnami/kafka:2.8.0                     "/opt/bitnami/script…"   2 minutes ago   Up About a minute        0.0.0.0:9092->9092/tcp                       g2_kafka-0
-    38bb75b89756   bitnami/kafka:2.8.0                     "/opt/bitnami/script…"   2 minutes ago   Up About a minute        9092/tcp, 0.0.0.0:9093->9093/tcp             g2_kafka-1
-    a681d5abdae5   bitnami/kafka:2.8.0                     "/opt/bitnami/script…"   2 minutes ago   Up About a minute        9092/tcp, 0.0.0.0:9094->9094/tcp             g2_kafka-2
-    caf36caa3185   confluentinc/cp-schema-registry:6.0.2   "/etc/confluent/dock…"   2 minutes ago   Up About a minute        0.0.0.0:8081->8081/tcp                       g2_schema-registry
-    6d0e949e842f   quay.io/cloudhut/kowl:v1.3.1            "./kowl"                 2 minutes ago   Up About a minute        0.0.0.0:9000->8080/tcp                       g2_kowl
+    CONTAINER ID   IMAGE                                   COMMAND                  CREATED          STATUS          PORTS                                                                   NAMES
+    93ff61652a48   mariadb:10.5.9                          "docker-entrypoint.s…"   29 seconds ago   Up 24 seconds   0.0.0.0:3306->3306/tcp, :::3306->3306/tcp                               g2_mariadb
+    1b827abf8180   wurstmeister/zookeeper:latest           "/bin/sh -c '/usr/sb…"   29 seconds ago   Up 25 seconds   22/tcp, 2888/tcp, 3888/tcp, 0.0.0.0:2181->2181/tcp, :::2181->2181/tcp   g2_zookeeper
+    9f1f96085cdf   wurstmeister/kafka:2.13-2.6.0           "start-kafka.sh"         29 seconds ago   Up 22 seconds   0.0.0.0:29092->29092/tcp, :::29092->29092/tcp                           g2_kafka-0
+    2387f301593d   wurstmeister/kafka:2.13-2.6.0           "start-kafka.sh"         29 seconds ago   Up 19 seconds   0.0.0.0:29093->29093/tcp, :::29093->29093/tcp                           g2_kafka-1
+    3ff4d8068211   wurstmeister/kafka:2.13-2.6.0           "start-kafka.sh"         29 seconds ago   Up 18 seconds   0.0.0.0:29094->29094/tcp, :::29094->29094/tcp                           g2_kafka-2
+    d28baec9b502   confluentinc/cp-schema-registry:6.0.2   "/etc/confluent/dock…"   29 seconds ago   Up 14 seconds   0.0.0.0:8081->8081/tcp, :::8081->8081/tcp                               g2_schema-registry
+    e2f134d83083   quay.io/cloudhut/kowl:v1.3.1            "./kowl"                 29 seconds ago   Up 10 seconds   0.0.0.0:9000->8080/tcp, :::9000->8080/tcp                               g2_kowl
 
 ### MariaDB
 #### MariaDB connection string
@@ -51,11 +51,11 @@ These directories are used as volumes for the associated docker containers.
 ### Kafka
 #### Kafka Broker
 
-| Kafka-Broker | Docker container | Access from within docker | Access from host |
-| ------------ | ---------------- | ------------------------- | ---------------- |
-| kafka-0      | g2_kafka-0       | kafka-0:29092             | localhost:9092   |
-| kafka-1      | g2_kafka-1       | kafka-1:29092             | localhost:9093   |
-| kafka-2      | g2_kafka-2       | kafka-2:29092             | localhost:9094   |
+| Kafka-Broker | Docker container | Access from within docker | Access from host  |
+| ------------ | ---------------- | ------------------------- | ----------------- |
+| kafka-0      | g2_kafka-0       | kafka-0:9092              | localhost:29092   |
+| kafka-1      | g2_kafka-1       | kafka-1:9092              | localhost:29093   |
+| kafka-2      | g2_kafka-2       | kafka-2:9092              | localhost:29094   |
 
 ### Kowl
 Access [Kowl GUI](http://localhost:9000/) via  

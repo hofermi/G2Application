@@ -7,6 +7,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Component;
@@ -20,6 +21,9 @@ public class G2BookingProducer {
 
     @Autowired // defined in KafkaProducerConfig
     private KafkaTemplate<String, AvroG2BookingRecord> g2BookingKafkaTemplate;
+
+    @Autowired
+    private ApplicationEventPublisher applicationEventPublisher;
 
     @Value(value = "${kafka.topic.g2Booking.name}") // configured in application.properties
     private String g2BookingTopicName;
@@ -35,6 +39,9 @@ public class G2BookingProducer {
         future.addCallback(new ListenableFutureCallback<>() {
             @Override
             public void onSuccess(SendResult<String, AvroG2BookingRecord> result) {
+                applicationEventPublisher.publishEvent(
+                    new G2BookingPayloadSentEvent(this, G2BookingPayloadUtil.fromAvroRecord(result.getProducerRecord().value()))
+                );
                 //LOG.info(
                 //        String.format(
                 //                "Sent event=[%s] with offset=[%d]",

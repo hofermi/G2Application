@@ -35,23 +35,15 @@ public class G2BookingStreamer {
                         relevantG2BookingRecordsCount(
                                 input
                                         // log received records
-                                        .filter(logMessagesPredicate("Received record: "))
+                                        .peek((kopfnummer, record) -> LOG.info("Received record: " + record.toString()))
                                         // filter relevant message types
-                                        .filter(filterRelevantMsgTypesPredicate())
+                                        .filter(relevantMsgTypesPredicate())
                                         // log received relevant records
-                                        .filter(logMessagesPredicate("Received relevant record: "))
+                                        .peek((kopfnummer, record) -> LOG.info("Received relevant record: " + record.toString()))
                         );
     }
 
-    private Predicate<String, AvroG2BookingRecord> logMessagesPredicate(String logPrefix) {
-        return
-                (kopfnummer, record) -> {
-                    LOG.info(logPrefix + record.toString());
-                    return true;
-                };
-    }
-
-    private Predicate<String, AvroG2BookingRecord> filterRelevantMsgTypesPredicate() {
+    private Predicate<String, AvroG2BookingRecord> relevantMsgTypesPredicate() {
         return
                 (kopfnummer, record) -> {
                     AvroMessageType messageType = record.getMessageType();

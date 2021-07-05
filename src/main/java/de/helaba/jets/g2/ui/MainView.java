@@ -23,14 +23,14 @@ import org.springframework.beans.factory.annotation.Autowired;
  * access main view via:
  * http://localhost:8080/
  */
-@Route
+// @Route
 public class MainView extends VerticalLayout {
 
     private static final Log LOG = LogFactory.getLog(MainView.class);
 
     private final static int NO_OF_BATCH_EVENTS = 10;
 
-    @Autowired
+//    @Autowired
     G2BookingProducer g2BookingProducer;
 
     @Autowired

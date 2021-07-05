@@ -10,7 +10,7 @@ import org.springframework.kafka.listener.adapter.ConsumerRecordMetadata;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 
-@Component // mandatory for using @KafkaListener
+// @Component // mandatory for using @KafkaListener
 public class G2BookingConsumer {
 
     private static final Log LOG = LogFactory.getLog(G2BookingConsumer.class);

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
-@Component // to be used as @Autowired component
+// @Component // to be used as @Autowired component
 public class G2BookingProducer {
 
     private static final Log LOG = LogFactory.getLog(G2BookingProducer.class);

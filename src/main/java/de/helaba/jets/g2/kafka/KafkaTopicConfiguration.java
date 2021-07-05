@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.KafkaAdmin;
 
-@Configuration
+// @Configuration
 public class KafkaTopicConfiguration {
 
     private static final Log LOG = LogFactory.getLog(KafkaTopicConfiguration.class);

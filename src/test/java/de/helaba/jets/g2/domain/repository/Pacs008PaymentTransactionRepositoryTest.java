@@ -1,18 +1,21 @@
 package de.helaba.jets.g2.domain.repository;
 
 import de.helaba.jets.g2.domain.InboundFile;
+import de.helaba.jets.g2.domain.LoaderInputFile;
 import de.helaba.jets.g2.domain.Pacs008PaymentTransaction;
 import de.helaba.jets.g2.domain.ServiceType;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@SpringBootTest
+@DataJpaTest
 @ExtendWith(SpringExtension.class)
 public class Pacs008PaymentTransactionRepositoryTest extends AbstractJpaRepositoryFactorySetup {
 
@@ -30,7 +33,7 @@ public class Pacs008PaymentTransactionRepositoryTest extends AbstractJpaReposito
         inboundFile.setFilename("testFilename");
         inboundFile.setCreationTimestamp(new Date());
         inboundFile.setRemitter("TestRemitter");
-        inboundFileRepository.save(inboundFile);
+        // inboundFileRepository.save(inboundFile);
 
         Pacs008PaymentTransaction pacs008PaymentTransaction = new Pacs008PaymentTransaction();
         pacs008PaymentTransaction.setAmount(new BigDecimal("10.00"));
@@ -42,9 +45,17 @@ public class Pacs008PaymentTransactionRepositoryTest extends AbstractJpaReposito
 
         //getEntityManager().getTransaction().commit();
 
-        //Pacs008PaymentTransaction entity = pacs008Repository.findByUid(pacs008PaymentTransaction.getUid());
-        Assertions.assertNotNull(entity);
+        Pacs008PaymentTransaction resultPacs008FromRepository = pacs008Repository.findByUid(pacs008PaymentTransaction.getUid());
+        Assertions.assertNotNull(resultPacs008FromRepository);
+        Assertions.assertNotNull(resultPacs008FromRepository.getUid());
         Assertions.assertEquals(pacs008PaymentTransaction, entity);
+        Assertions.assertNotNull(pacs008PaymentTransaction.getInboundFile());
+
+        Optional<LoaderInputFile> resultInboundFileFromRepository = inboundFileRepository.findById(inboundFile.getUid());
+        Assertions.assertNotNull(resultInboundFileFromRepository);
+        Assertions.assertNotNull(resultInboundFileFromRepository.get().getUid());
+        Assertions.assertEquals(resultInboundFileFromRepository, inboundFile);
+        Assertions.assertNotNull(resultInboundFileFromRepository.get().getFilename());
     }
 
 }

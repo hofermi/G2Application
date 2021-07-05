@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.KafkaStreamsDefaultConfiguration;
 import org.springframework.kafka.config.StreamsBuilderFactoryBean;
 
-@Configuration
+// @Configuration
 public class KafkaStreamConfiguration {
 
     private int threads = 1;
